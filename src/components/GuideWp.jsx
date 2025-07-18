@@ -65,7 +65,7 @@ const GuideWp = () => {
   const getAnimationText = () => {
     if (exportComplete) return "✅ Document généré avec succès !";
     if (isExporting) return "⏳ Génération en cours...";
-    return "📋 Document en cours de préparation";
+    return "📋 Veuillez renseigner les informations du client dans le formulaire.";
   };
 
   const handleExportAll = async () => {
