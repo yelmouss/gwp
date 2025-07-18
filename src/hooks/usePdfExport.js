@@ -16,7 +16,7 @@ const usePdfExport = () => {
 
       // Configuration pour html2canvas optimisée pour PDF paysage
       const canvas = await html2canvas(element, {
-        scale: 2, // Meilleure qualité
+        scale: 1.5, // Réduction pour éviter les problèmes de taille
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -24,8 +24,8 @@ const usePdfExport = () => {
         height: 595, // A4 paysage height
         scrollX: 0,
         scrollY: 0,
-        windowWidth: 842,
-        windowHeight: 595,
+        windowWidth: 1200, // Plus large pour capturer tout le contenu
+        windowHeight: 800,
         ignoreElements: function(element) {
           // Ignorer les éléments qui peuvent causer des problèmes
           return element.tagName === 'IFRAME' || element.classList.contains('ignore-pdf');
@@ -50,20 +50,20 @@ const usePdfExport = () => {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      // Calculer les dimensions pour maintenir le ratio
+      // Calculer les dimensions pour maintenir le ratio et remplir la page
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      
+      // Utiliser toute la page PDF sans marge
+      const scaledWidth = pdfWidth;
+      const scaledHeight = pdfHeight;
 
-      const scaledWidth = imgWidth * ratio;
-      const scaledHeight = imgHeight * ratio;
-
-      // Centrer l'image dans le PDF
-      const x = (pdfWidth - scaledWidth) / 2;
-      const y = (pdfHeight - scaledHeight) / 2;
+      // Pas de centrage, utiliser toute la page
+      const x = 0;
+      const y = 0;
 
       // Convertir canvas en image et ajouter au PDF
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       pdf.addImage(imgData, 'JPEG', x, y, scaledWidth, scaledHeight);
 
       // Sauvegarder le PDF
@@ -102,7 +102,7 @@ const usePdfExport = () => {
 
         // Configuration pour html2canvas optimisée pour PDF paysage
         const canvas = await html2canvas(element, {
-          scale: 2, // Meilleure qualité
+          scale: 1.5, // Réduction pour éviter les problèmes de taille
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
@@ -110,24 +110,24 @@ const usePdfExport = () => {
           height: 595, // A4 paysage height
           scrollX: 0,
           scrollY: 0,
-          windowWidth: 842,
-          windowHeight: 595,
+          windowWidth: 1200,
+          windowHeight: 800,
         });
 
         // Retirer la classe après capture
         element.classList.remove('pdf-export');
 
-        // Calculer les dimensions pour maintenir le ratio
+        // Calculer les dimensions pour maintenir le ratio et remplir la page
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
-        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        
+        // Utiliser toute la page PDF sans marge
+        const scaledWidth = pdfWidth;
+        const scaledHeight = pdfHeight;
 
-        const scaledWidth = imgWidth * ratio;
-        const scaledHeight = imgHeight * ratio;
-
-        // Centrer l'image dans le PDF
-        const x = (pdfWidth - scaledWidth) / 2;
-        const y = (pdfHeight - scaledHeight) / 2;
+        // Pas de centrage, utiliser toute la page
+        const x = 0;
+        const y = 0;
 
         // Ajouter une nouvelle page sauf pour la première
         if (!isFirstPage) {
@@ -136,7 +136,7 @@ const usePdfExport = () => {
         isFirstPage = false;
 
         // Convertir canvas en image et ajouter au PDF
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
         pdf.addImage(imgData, 'JPEG', x, y, scaledWidth, scaledHeight);
       }
 

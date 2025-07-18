@@ -1,4 +1,4 @@
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 import useResponsiveDesign from "../hooks/useResponsiveDesign";
@@ -19,7 +19,7 @@ const Page3 = () => {
   return (
     <>
       <Container
-        id="page3-container"   
+        id="page3-container"
         maxWidth="xl"
         sx={{
           backgroundImage: "url('/backgrounds/page3.png')",
@@ -53,7 +53,7 @@ const Page3 = () => {
             transformOrigin: "top left",
           },
         }}
-      > 
+      >
         <Grid
           container
           spacing={1}
@@ -64,6 +64,14 @@ const Page3 = () => {
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
+            "@media print": {
+              alignItems: "flex-start",
+              paddingTop: "30px",
+            },
+            "&.pdf-export": {
+              alignItems: "flex-start",
+              paddingTop: "30px",
+            },
           }}
           className="relative z-10"
         >
@@ -81,8 +89,18 @@ const Page3 = () => {
             <div
               className="circle-notions"
               style={{
-                width: deviceType === 'mobile' ? '150px' : deviceType === 'tablet' ? '150px' : '200px',
-                height: deviceType === 'mobile' ? '150px' : deviceType === 'tablet' ? '150px' : '200px',
+                width:
+                  deviceType === "mobile"
+                    ? "120px"
+                    : deviceType === "tablet"
+                    ? "140px"
+                    : "150px",
+                height:
+                  deviceType === "mobile"
+                    ? "120px"
+                    : deviceType === "tablet"
+                    ? "140px"
+                    : "150px",
                 backgroundColor: "#F4D03F",
                 borderRadius: "50%",
                 display: "flex",
@@ -92,30 +110,38 @@ const Page3 = () => {
                 boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
               }}
             >
-              <h2
+              <Typography
+                variant="h2"
                 style={{
-                  fontSize: deviceType === 'mobile' ? '1rem' : deviceType === 'tablet' ? '1.2rem' : '1.5rem',
+                  fontSize:
+                    deviceType === "mobile"
+                      ? "0.6rem"
+                      : deviceType === "tablet"
+                      ? "0.7rem"
+                      : "0.9rem",
                   fontWeight: "bold",
                   color: "#2C3E50",
                   margin: 0,
-                  lineHeight: "1.2",
+                  lineHeight: "1.0",
                   textShadow: "1px 1px 2px rgba(255,255,255,0.3)",
                 }}
                 sx={{
                   "@media print": {
-                    fontSize: "2rem !important",
+                    fontSize: "0.32rem !important",
                     color: "#2C3E50 !important",
+                    lineHeight: "0.65 !important",
                   },
                   "&.pdf-export": {
-                    fontSize: "2rem !important",
+                    fontSize: "0.32rem !important",
                     color: "#2C3E50 !important",
+                    lineHeight: "0.65 !important",
                   },
                 }}
               >
                 NOTIONS
                 <br />
                 ABORDÉES
-              </h2>
+              </Typography>
             </div>
           </Grid>
 
@@ -131,28 +157,47 @@ const Page3 = () => {
               pl: { xs: 1, sm: 2 },
               pr: { xs: 1, sm: 2 },
               overflow: "hidden",
+              "@media print": {
+                justifyContent: "flex-start",
+                paddingTop: "20px",
+              },
+              "&.pdf-export": {
+                justifyContent: "flex-start",
+                paddingTop: "20px",
+              },
             }}
           >
             <div
               className="steps-container"
               style={{
                 backgroundColor: "rgba(255, 255, 255, 0.95)",
-                padding: deviceType === 'mobile' ? '10px' : deviceType === 'tablet' ? '15px' : '20px',
+                padding:
+                  deviceType === "mobile"
+                    ? "10px"
+                    : deviceType === "tablet"
+                    ? "15px"
+                    : "20px",
                 borderRadius: "16px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",  
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                 overflowY: "auto",
+                width: "100%",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: deviceType === 'mobile' ? '8px' : deviceType === 'tablet' ? '10px' : '12px',
+                  gap:
+                    deviceType === "mobile"
+                      ? "8px"
+                      : deviceType === "tablet"
+                      ? "10px"
+                      : "12px",
                 }}
               >
                 {steps.map((step, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -160,61 +205,51 @@ const Page3 = () => {
                       padding: "4px 0",
                     }}
                   >
-                    <div 
+                    <div
                       className="step-number"
                       style={{
-                        width: deviceType === 'mobile' ? '15px' : '20px',
-                        height: deviceType === 'mobile' ? '15px' : '20px',
+                        width: deviceType === "mobile" ? "15px" : "20px",
+                        height: deviceType === "mobile" ? "15px" : "20px",
                         backgroundColor: "#292F51",
                         borderRadius: "50%",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         color: "white",
-                        fontSize: deviceType === 'mobile' ? '0.5rem' : '0.6rem',
+                        fontSize: deviceType === "mobile" ? "0.5rem" : "0.6rem",
                         fontWeight: "bold",
                         flexShrink: 0,
                       }}
                     >
                       {index + 1}
                     </div>
-                    <span 
+                    <span
                       style={{
-                        fontSize: deviceType === 'mobile' ? '0.5rem' : deviceType === 'tablet' ? '0.6rem' : '0.7rem',
+                        fontSize:
+                          deviceType === "mobile"
+                            ? "0.5rem"
+                            : deviceType === "tablet"
+                            ? "0.6rem"
+                            : "0.7rem",
                         color: "#2C3E50",
                         fontWeight: "500",
                         flex: 1,
                       }}
-                      sx={{
-                        "@media print": {
-                          fontSize: "1rem !important",
-                          color: "#2C3E50 !important",
-                        },
-                        "&.pdf-export": {
-                          fontSize: "1rem !important",
-                          color: "#2C3E50 !important",
-                        },
-                      }}
                     >
                       {step.text}
                     </span>
-                    <span 
+                    <span
                       className="page-number"
                       style={{
-                        fontSize: deviceType === 'mobile' ? '0.5rem' : deviceType === 'tablet' ? '0.6rem' : '0.7rem',
+                        fontSize:
+                          deviceType === "mobile"
+                            ? "0.5rem"
+                            : deviceType === "tablet"
+                            ? "0.6rem"
+                            : "0.7rem",
                         color: "#7F8C8D",
                         fontWeight: "600",
                         marginLeft: "auto",
-                      }}
-                      sx={{
-                        "@media print": {
-                          fontSize: "0.7rem !important",
-                          color: "#7F8C8D !important",
-                        },
-                        "&.pdf-export": {
-                          fontSize: "0.7rem !important",
-                          color: "#7F8C8D !important",
-                        },
                       }}
                     >
                       p.{step.page}
@@ -230,4 +265,4 @@ const Page3 = () => {
   );
 };
 
-export default Page3
+export default Page3;

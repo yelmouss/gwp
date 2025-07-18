@@ -47,24 +47,20 @@ const Page4 = () => {
         <h2 
           className="font-bold z-10 text-left sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
           style={{
-            color: "#E9CF96",
+            color: "#FFE3A4",
             textShadow: "2px 2px 4px rgba(255,255,255,0.8)",
-            maxWidth: "50%", // Limite la largeur pour laisser voir le background
+            maxWidth: "50%",
             wordBreak: "break-word",
-            marginLeft: "5%", // Décale légèrement du bord gauche
-            lineHeight: "1.2",
-            margin: 0,
-            // Styles spécifiques pour l'impression/PDF
+            marginLeft: "5%",
             "@media print": {
-              fontSize: "3rem !important",
-              color: "#E9CF96 !important",
+              fontSize: "2.5rem !important",
+              color: "#FFE3A4 !important",
             },
           }}
           sx={{
-            // Styles pour l'exportation PDF
             "&.pdf-export": {
-              fontSize: "3rem !important",
-              color: "#E9CF96 !important",
+              fontSize: "2.5rem !important",
+              color: "#FFE3A4 !important",
             },
           }}
         >
