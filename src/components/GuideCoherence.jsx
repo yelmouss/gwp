@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Box } from "@mui/material";
+import { Box, Container, Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -25,14 +25,22 @@ const GuideCohérence = () => {
     setIsGenerating(true);
     try {
       const pdf = new jsPDF("l", "mm", "a4");
+      let isFirstPage = true;
+
       for (let i = 1; i <= 14; i++) {
         if (i === 5) {
           const canvas = await html2canvas(page5Ref.current, {
-            scale: 8,
+            scale: 3,
             useCORS: true,
+            backgroundColor: "#F0F5FE",
           });
           const dataURL = canvas.toDataURL("image/png");
+
+          if (!isFirstPage) {
+            pdf.addPage([297, 210]); // Format A4 paysage pour la page 5
+          }
           pdf.addImage(dataURL, "PNG", 0, 0, 297, 210);
+          isFirstPage = false;
         } else {
           const img = new Image();
           img.crossOrigin = "anonymous";
@@ -40,6 +48,7 @@ const GuideCohérence = () => {
           await new Promise((resolve) => {
             img.onload = resolve;
           });
+
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
           canvas.width = img.naturalWidth;
@@ -47,29 +56,23 @@ const GuideCohérence = () => {
           ctx.drawImage(img, 0, 0);
           const dataURL = canvas.toDataURL("image/jpeg");
 
-          const pageWidth = 297;
-          const pageHeight = 210;
+          // Calculer la hauteur de page optimale pour éviter la déformation
+          const pageWidth = 297; // largeur A4 paysage en mm
           const imgAspect = img.naturalWidth / img.naturalHeight;
-          const pageAspect = pageWidth / pageHeight;
+          const pageHeight = pageWidth / imgAspect; // hauteur calculée pour maintenir le ratio
 
-          let imgWidth, imgHeight, x, y;
-          if (imgAspect > pageAspect) {
-            // Image is wider, fit to width
-            imgWidth = pageWidth;
-            imgHeight = pageWidth / imgAspect;
-            x = 0;
-            y = (pageHeight - imgHeight) / 2;
+          if (!isFirstPage) {
+            pdf.addPage([pageWidth, pageHeight]);
           } else {
-            // Image is taller, fit to height
-            imgHeight = pageHeight;
-            imgWidth = pageHeight * imgAspect;
-            x = (pageWidth - imgWidth) / 2;
-            y = 0;
+            // Définir la taille de la première page
+            pdf.internal.pageSize.width = pageWidth;
+            pdf.internal.pageSize.height = pageHeight;
           }
 
-          pdf.addImage(dataURL, "JPEG", x, y, imgWidth, imgHeight);
+          // Ajouter l'image sans déformation
+          pdf.addImage(dataURL, "JPEG", 0, 0, pageWidth, pageHeight);
+          isFirstPage = false;
         }
-        if (i < 14) pdf.addPage();
       }
       pdf.save(`${accountName} - Guide WP.pdf`);
     } finally {
@@ -125,159 +128,358 @@ const GuideCohérence = () => {
         </Button>
       </Stack>
 
-      {page === 5 ? (
-        <Stack
-          spacing={2}
-          sx={{
-            padding: "10px",
-            margin: "auto",
-            width: "100%",
-            height: "100%",
-            bgcolor: "#F0F5FE",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+      <Divider sx={{ my: 3 }} />
+
+      <Container maxWidth="md">
+        {page === 5 ? (
+          <div
+            style={{
+              padding: "40px 20px",
+              margin: "auto",
+              width: "100%",
+              minHeight: "80vh",
+              backgroundColor: "#F0F5FE",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                marginBottom: "40px",
+                maxWidth: "800px",
+              }}
+            >
+              <h1
+                style={{
+                  fontSize: "48px",
+                  fontWeight: "bold",
+                  color: "#292E50",
+                  marginBottom: "30px",
+                }}
+              >
+                Votre <span style={{ color: "#496FFF" }}>interface</span>{" "}
+                d'administration
+              </h1>
+
+              <p
+                style={{
+                  fontSize: "18px",
+                  color: "#292E50",
+                  lineHeight: "1.6",
+                  marginBottom: "0",
+                }}
+              >
+                Vous arriverez ensuite sur une page spécifique sur laquelle vous
+                seront demandés votre nom d'utilisateur et votre mot de passe.
+                Vos identifiants (mis en place à la création de votre site
+                internet) sont les suivants :
+              </p>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "500px",
+                backgroundColor: "white",
+                padding: "40px",
+                borderRadius: "12px",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "16px",
+                    color: "#292E50",
+                    marginBottom: "8px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Identifiant ou adresse mail
+                </label>
+                <input
+                  type="text"
+                  value={identifier}
+                  readOnly
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "2px solid #e1e5e9",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    backgroundColor: "#f8f9fa",
+                    color: "#292E50",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "16px",
+                    color: "#292E50",
+                    marginBottom: "8px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Mot de passe
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  readOnly
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "2px solid #e1e5e9",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    backgroundColor: "#f8f9fa",
+                    color: "#292E50",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: "16px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    id="remember-web"
+                    style={{
+                      marginRight: "8px",
+                      transform: "scale(1.2)",
+                    }}
+                  />
+                  <label
+                    htmlFor="remember-web"
+                    style={{
+                      fontSize: "16px",
+                      color: "#292E50",
+                    }}
+                  >
+                    Se souvenir de moi
+                  </label>
+                </div>
+
+                <button
+                  style={{
+                    padding: "12px 32px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s ease",
+                  }}
+                >
+                  Se connecter
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={`/GUIDE WP COHERENCE/Slide${page}.jpg`}
+            alt={`Slide ${page}`}
+            style={{ width: "100%", height: "auto" }}
+          />
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            opacity: 0,
+            width: "297mm",
+            height: "210mm",
           }}
         >
-          <Typography
-            variant="h3"
-            color="#292E50"
-            fontWeight={"bold"}
-            gutterBottom
+          <div
+            ref={page5Ref}
+            style={{
+              width: "297mm",
+              height: "210mm",
+              background: "#F0F5FE",
+              padding: "15mm 20mm",
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Votre <span style={{ color: "#496FFF" }}>interface</span>{" "}
-            d'administration
-          </Typography>
-          <Typography variant="h6" color="#292E50" gutterBottom>
-            Vous arriverez ensuite sur une page spécifique sur laquelle vous
-            seront demandés votre nom d'utilisateur et votre mot de passe. Vos
-            identifiants (mis en place à la création de votre site internet)
-            sont les suivants :​
-          </Typography>
-          <Box width={"100%"} maxWidth={"400px"}>
-            <label htmlFor="identifier">Identifiant ou adresse mail</label>
-            <input
-              id="identifier"
-              type="text"
-              value={identifier}
-              readOnly
+            <div
               style={{
+                textAlign: "center",
+                marginBottom: "20mm",
                 width: "100%",
-                padding: "8px",
-                marginBottom: "16px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
               }}
-            />
-            <label htmlFor="password">Mot de passe</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              readOnly
-              style={{
-                width: "100%",
-                padding: "8px",
-                marginBottom: "16px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            />
-            <FormControlLabel
-              control={<Checkbox />}
-              label="Se souvenir de moi"
-            />
-            <Button variant="contained" color="primary">
-              Se connecter
-            </Button>
-          </Box>
-        </Stack>
-      ) : (
-        <img
-          src={`/GUIDE WP COHERENCE/Slide${page}.jpg`}
-          alt={`Slide ${page}`}
-          style={{ width: "100%", height: "auto" }}
-        />
-      )}
+            >
+              <h1
+                style={{
+                  fontSize: "20pt",
+                  fontWeight: "bold",
+                  color: "#292E50",
+                  margin: "0 0 8mm 0",
+                }}
+              >
+                Votre <span style={{ color: "#496FFF" }}>interface</span>{" "}
+                d'administration
+              </h1>
 
-      <div
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          opacity: 0,
-          width: "841px",
-          height: "595px",
-        }}
-      >
-        <Stack
-          ref={page5Ref}
-          spacing={2}
-          sx={{
-            padding: "10px",
-            margin: "auto",
-            width: "100%",
-            height: "100%",
-            bgcolor: "#F0F5FE",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            variant="h3"
-            color="#292E50"
-            fontWeight={"bold"}
-            gutterBottom
-          >
-            Votre <span style={{ color: "#496FFF" }}>interface</span>{" "}
-            d'administration
-          </Typography>
-          <Typography variant="h6" color="#292E50" gutterBottom>
-            Vous arriverez ensuite sur une page spécifique sur laquelle vous
-            seront demandés votre nom d'utilisateur et votre mot de passe. Vos
-            identifiants (mis en place à la création de votre site internet)
-            sont les suivants :​
-          </Typography>
-          <Box width={"100%"} maxWidth={"400px"}>
-            <label htmlFor="identifier">Identifiant ou adresse mail</label>
-            <input
-              id="identifier"
-              type="text"
-              value={identifier}
-              style={{
-                width: "100%",
-                padding: "8px",
-                marginBottom: "16px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            />
-            <label htmlFor="password">Mot de passe</label>
-            <input
-              id="password"
-              type="text"
-              value={password}
-              style={{
-                width: "100%",
-                padding: "8px",
-                marginBottom: "16px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            />
-            <FormControlLabel
-              control={<Checkbox />}
-              label="Se souvenir de moi"
-            />
-            <Button variant="contained" color="primary">
-              Se connecter
-            </Button>
-          </Box>
-        </Stack>
-      </div>
+              <p
+                style={{
+                  fontSize: "11pt",
+                  color: "#292E50",
+                  margin: "0",
+                  lineHeight: "1.3",
+                  maxWidth: "180mm",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              >
+                Vous arriverez ensuite sur une page spécifique sur laquelle vous
+                seront demandés votre nom d'utilisateur et votre mot de passe.
+                Vos identifiants (mis en place à la création de votre site
+                internet) sont les suivants :
+              </p>
+            </div>
 
+            <div
+              style={{
+                width: "100mm",
+                backgroundColor: "white",
+                padding: "12mm",
+                borderRadius: "3mm",
+                boxShadow: "0 2mm 8mm rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <div style={{ marginBottom: "6mm" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "9pt",
+                    color: "#292E50",
+                    marginBottom: "2mm",
+                    fontWeight: "500",
+                  }}
+                >
+                  Identifiant ou adresse mail
+                </label>
+                <input
+                  type="text"
+                  value={identifier}
+                  readOnly
+                  style={{
+                    width: "100%",
+                    padding: "2.5mm 3mm",
+                    border: "1px solid #ccc",
+                    borderRadius: "2mm",
+                    fontSize: "24px",
+                    backgroundColor: "#f9f9f9",
+                    color: "#292E50",
+                    boxSizing: "border-box",
+                    transform: "scale(1.0)",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "6mm" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "9pt",
+                    color: "#292E50",
+                    marginBottom: "2mm",
+                    fontWeight: "500",
+                    marginTop: "3mm",
+                  }}
+                >
+                  Mot de passe
+                </label>
+                <input
+                  type="text"
+                  value={password}
+                  readOnly
+                  style={{
+                    width: "100%",
+                    padding: "2.5mm 3mm",
+                    border: "1px solid #ccc",
+                    borderRadius: "2mm",
+                    fontSize: "24px",
+                    backgroundColor: "#f9f9f9",
+                    color: "#292E50",
+                    boxSizing: "border-box",
+                    transform: "scale(1.0)",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "0",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    id="remember-pdf"
+                    style={{
+                      marginRight: "2mm",
+                      transform: "scale(1.0)",
+                    }}
+                  />
+                  <label
+                    htmlFor="remember-pdf"
+                    style={{
+                      fontSize: "10px",
+                      color: "#292E50",
+                    }}
+                  >
+                    Se souvenir de moi
+                  </label>
+                </div>
+
+                <button
+                  style={{
+                    padding: "2.5mm 6mm",
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "2mm",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    marginLeft: "3mm",
+                  }}
+                >
+                  Se connecter
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Container>
       <Stack
         spacing={2}
         sx={{
