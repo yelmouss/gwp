@@ -11,12 +11,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata = {
   title: "Weshore - Générateur de Guides WordPress",
   description: "Créez facilement des guides personnalisés pour vos clients WordPress avec Weshore. Interface intuitive pour générer des PDFs professionnels.",
   keywords: "WordPress, guide, PDF, générateur, Weshore, tutoriel, documentation",
   authors: 'Yelmouss',
-  viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
   openGraph: {
     title: "Weshore - Générateur de Guides WordPress",
@@ -36,9 +40,16 @@ export default function RootLayout({ children }) {
     <html lang="fr">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg" sizes="16x16" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/weshore-logo.svg" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="manifest" href="/site.webmanifest" crossOrigin="use-credentials" />
         <meta name="theme-color" content="#2dd4bf" />
+        <meta name="application-name" content="Weshore" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Weshore" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
