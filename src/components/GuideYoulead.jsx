@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Box, Container, Divider } from "@mui/material";
+import { Box, Container, Divider, Grid } from "@mui/material";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -93,39 +93,52 @@ const GuideYoulead = () => {
           alignItems: "center",
           flexWrap: "wrap",
         }}
+        className="flex items-center justify-center mb-4"
       >
-        <TextField
-          label="Nom du compte"
-          value={accountName}
-          onChange={(e) => setAccountName(e.target.value)}
-          variant="outlined"
-          size="small"
-          sx={{ minWidth: 150 }}
-        />
-        <TextField
-          label="Identifiant"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
-          variant="outlined"
-          size="small"
-          sx={{ minWidth: 150 }}
-        />
-        <TextField
-          label="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          variant="outlined"
-          size="small"
-          sx={{ minWidth: 150 }}
-        />
-        <Button
-          variant="contained"
-          onClick={generatePDF}
-          disabled={isGenerating}
-          sx={{ minWidth: 150 }}
-        >
-          {isGenerating ? "Génération en cours..." : "Générer PDF"}
-        </Button>
+        <Grid container spacing={2} alignItems="center">
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              label="Nom du compte"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              variant="outlined"
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              label="Identifiant"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              variant="outlined"
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              label="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              variant="outlined"
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 3 }}>
+            <Button
+              variant="contained"
+              onClick={generatePDF}
+              disabled={isGenerating}
+              sx={{ minWidth: 150 }}
+              fullWidth
+            >
+              {isGenerating ? "Génération en cours..." : "Générer PDF"}
+            </Button>
+          </Grid>
+        </Grid>
       </Stack>
 
       <Divider sx={{ my: 3 }} />
