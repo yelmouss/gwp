@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import GuideCohérence from "./GuideCoherence";
 import GuideYoulead from "./GuideYoulead";
 import { Paper, useTheme, useMediaQuery } from "@mui/material";
+import DecryptedText from "./DecryptedText";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -20,7 +21,9 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>{children}</Box>}
+      {value === index && (
+        <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>{children}</Box>
+      )}
     </div>
   );
 }
@@ -41,12 +44,12 @@ function a11yProps(index) {
 const Generator = () => {
   const [value, setValue] = React.useState(0);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  
+
   return (
     <Paper
       elevation={6}
@@ -58,44 +61,41 @@ const Generator = () => {
         backdropFilter: "blur(10px)",
         backgroundColor: "rgba(255, 255, 255, 0.92)",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-        height: { xs: 'auto', md: 'auto' },
-        maxHeight: { xs: '90vh', md: '85vh' },
+        height: { xs: "auto", md: "auto" },
+        maxHeight: { xs: "90vh", md: "85vh" },
         display: "flex",
         flexDirection: "column",
+        alignContent: "center",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
-      <Box 
-        sx={{ 
-          p: { xs: 2, sm: 3, md: 4 }, 
+      <Box
+        sx={{
+          p: { xs: 2, sm: 3, md: 4 },
           pt: { xs: 3, sm: 4 },
           pb: 2,
           borderBottom: `1px solid ${theme.palette.divider}`,
-          background: "linear-gradient(to right, rgba(43, 69, 57, 0.1), rgba(97, 220, 163, 0.1), rgba(97, 179, 220, 0.1))",
+          background:
+            "linear-gradient(to right, rgba(43, 69, 57, 0.1), rgba(97, 220, 163, 0.1), rgba(97, 179, 220, 0.1))",
         }}
+        width={"100%"}
+        textAlign={"center"}
       >
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          component="h1"
-          align="center"
-          gutterBottom
-          sx={{ 
-            fontWeight: "bold",
-            color: "#2b4539",
-            textShadow: "0 1px 2px rgba(0,0,0,0.05)",
-          }}
-        >
-          Générateur de Guides WordPress
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          sx={{ mb: 1, color: "text.secondary" }}
-        >
-          Créez facilement des guides personnalisés pour vos clients
-        </Typography>
+        <DecryptedText
+          text="Générateur de Guides WordPress"
+          speed={200}
+          maxIterations={35}
+          animateOn="view"
+          revealDirection="center"
+          characters="Générateur de Guides WordPress"
+          className="revealed text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-1"
+          parentClassName="all-letters"
+          encryptedClassName="encrypted revealed text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-1"
+        />
       </Box>
 
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }} width={"100%"}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -106,7 +106,7 @@ const Generator = () => {
           sx={{
             "& .MuiTab-root": {
               fontWeight: 600,
-              fontSize: { xs: '0.9rem', sm: '1rem' },
+              fontSize: { xs: "0.9rem", sm: "1rem" },
               py: 1.5,
               transition: "all 0.2s ease",
               "&:hover": {
@@ -119,8 +119,8 @@ const Generator = () => {
           <Tab label="YOULEAD" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      
-      <Box sx={{ flex: 1, overflowY: "auto" }}>
+
+      <Box sx={{ flex: 1, overflowY: "auto" }} width={"100%"}>
         <CustomTabPanel value={value} index={0}>
           <GuideCohérence />
         </CustomTabPanel>
@@ -130,7 +130,6 @@ const Generator = () => {
       </Box>
     </Paper>
   );
-}
-
+};
 
 export default Generator;
