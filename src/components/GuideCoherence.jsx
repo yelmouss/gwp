@@ -13,6 +13,12 @@ import { Box, Container, Divider, Grid } from "@mui/material";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
+const PDF_WIDTH_MM = 297;
+const PDF_HEIGHT_MM = 210;
+const EXPORT_WIDTH_PX = 1400;
+const EXPORT_HEIGHT_PX = Math.round(EXPORT_WIDTH_PX * (PDF_HEIGHT_MM / PDF_WIDTH_MM));
+const JPEG_QUALITY = 0.72;
+
 const GuideCohérence = () => {
   const [page, setPage] = useState(1);
   const [accountName, setAccountName] = useState("");
@@ -21,56 +27,86 @@ const GuideCohérence = () => {
   const page5Ref = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const canvasToCompressedJpeg = (sourceCanvas) => {
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = EXPORT_WIDTH_PX;
+    exportCanvas.height = EXPORT_HEIGHT_PX;
+    const ctx = exportCanvas.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    ctx.drawImage(sourceCanvas, 0, 0, exportCanvas.width, exportCanvas.height);
+    return exportCanvas.toDataURL("image/jpeg", JPEG_QUALITY);
+  };
+
+  const loadImage = (src) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+
   const generatePDF = async () => {
     setIsGenerating(true);
     try {
-      const pdf = new jsPDF("l", "mm", "a4");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
       let isFirstPage = true;
 
       for (let i = 1; i <= 14; i++) {
         if (i === 5) {
           const canvas = await html2canvas(page5Ref.current, {
-            scale: 3,
+            scale: 1.5,
             useCORS: true,
             backgroundColor: "#F0F5FE",
           });
-          const dataURL = canvas.toDataURL("image/png");
+          const dataURL = canvasToCompressedJpeg(canvas);
 
           if (!isFirstPage) {
-            pdf.addPage([297, 210]); // Format A4 paysage pour la page 5
+            pdf.addPage([PDF_WIDTH_MM, PDF_HEIGHT_MM]);
           }
-          pdf.addImage(dataURL, "PNG", 0, 0, 297, 210);
+          pdf.addImage(
+            dataURL,
+            "JPEG",
+            0,
+            0,
+            PDF_WIDTH_MM,
+            PDF_HEIGHT_MM,
+            undefined,
+            "FAST"
+          );
           isFirstPage = false;
         } else {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = `/GUIDE WP COHERENCE/Slide${i}.jpg`;
-          await new Promise((resolve) => {
-            img.onload = resolve;
-          });
+          const img = await loadImage(`/GUIDE WP COHERENCE/Slide${i}.jpg`);
 
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          ctx.drawImage(img, 0, 0);
-          const dataURL = canvas.toDataURL("image/jpeg");
-
-          // Calculer la hauteur de page optimale pour éviter la déformation
-          const pageWidth = 297; // largeur A4 paysage en mm
-          const imgAspect = img.naturalWidth / img.naturalHeight;
-          const pageHeight = pageWidth / imgAspect; // hauteur calculée pour maintenir le ratio
+          canvas.width = EXPORT_WIDTH_PX;
+          canvas.height = EXPORT_HEIGHT_PX;
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataURL = canvas.toDataURL("image/jpeg", JPEG_QUALITY);
 
           if (!isFirstPage) {
-            pdf.addPage([pageWidth, pageHeight]);
-          } else {
-            // Définir la taille de la première page
-            pdf.internal.pageSize.width = pageWidth;
-            pdf.internal.pageSize.height = pageHeight;
+            pdf.addPage([PDF_WIDTH_MM, PDF_HEIGHT_MM]);
           }
 
-          // Ajouter l'image sans déformation
-          pdf.addImage(dataURL, "JPEG", 0, 0, pageWidth, pageHeight);
+          pdf.addImage(
+            dataURL,
+            "JPEG",
+            0,
+            0,
+            PDF_WIDTH_MM,
+            PDF_HEIGHT_MM,
+            undefined,
+            "FAST"
+          );
           isFirstPage = false;
         }
       }
