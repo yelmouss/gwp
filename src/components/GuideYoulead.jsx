@@ -15,7 +15,7 @@ import html2canvas from "html2canvas";
 
 const PDF_WIDTH_MM = 297;
 const PDF_HEIGHT_MM = 167;
-const EXPORT_WIDTH_PX = 1400;
+const EXPORT_WIDTH_PX = 1920;
 const EXPORT_HEIGHT_PX = Math.round(EXPORT_WIDTH_PX * (PDF_HEIGHT_MM / PDF_WIDTH_MM));
 const JPEG_QUALITY = 0.72;
 
@@ -356,14 +356,14 @@ const GuideYoulead = () => {
             left: "-9999px",
             opacity: 0,
             width: "297mm",
-            height: "210mm",
+            height: "167mm",
           }}
         >
           <div
             ref={page5Ref}
             style={{
               width: "297mm",
-              height: "210mm",
+              height: "167mm",
               background: "#F0F5FE",
               padding: "15mm 20mm",
               boxSizing: "border-box",
