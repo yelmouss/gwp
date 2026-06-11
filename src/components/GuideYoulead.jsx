@@ -53,7 +53,7 @@ const GuideYoulead = () => {
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "mm",
-        format: "a4",
+        format: [PDF_WIDTH_MM, PDF_HEIGHT_MM],
         compress: true,
       });
       let isFirstPage = true;
